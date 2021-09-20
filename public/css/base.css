@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Microsoft YaHei",Arial,Helvetica,sans-serif,"宋体";
+}
+a{
+    text-decoration: none;
+    color: #333333;
+}
+body{
+    min-width: 1200px !important;
+    line-height: normal !important;
+    font-size: 14px;
+    font-family: "Microsoft YaHei",Arial,Helvetica,sans-serif,"宋体" !important;
+    background-color: #eff9fc;
+    color: #333333;
+}
+ul, ol{
+    list-style: none;
+    margin-bottom: 0px !important;
+}
+.container-table{
+    display: table;
+    table-layout: fixed;
+}
+.table-cell{
+    display: table-cell;
+}
+.col-float{
+    float: left;
+}

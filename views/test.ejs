@@ -1,0 +1,18 @@
+<%- include('base/header.ejs') %>
+
+<div id="test">
+    <input id="upload" type="file" name="fileUpload" />
+</div>
+
+<script>
+    $(function() {
+        $("#upload").on('change', function upload() {
+            fileTool.fileUpload('/api/upload/file', 'file', this, function(data) {
+                console.log("上传成功", data);
+            }, function () {
+                console.log("上传失败");
+            });
+        })
+    })
+</script>
+<%- include('base/footer.ejs') %>

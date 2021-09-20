@@ -1,0 +1,24 @@
+<%- include('base/header.ejs') %>
+<style>
+#auth{
+    padding-top: 10%;
+}
+#auth .auth-logo{
+    width: 220px;
+    display: block;
+    margin: 0 auto;
+}
+
+#auth .help-msg{
+    display: block;
+    text-align: center;
+    margin: 25px 0px;
+}
+</style>
+
+<div id="auth">
+    <img class="auth-logo" src="/img/auth.png" />
+    <p class="help-msg">您需要登录才能访问，请先<a href="javascript:;" >登录</a></p>
+</div>
+
+<%- include('base/footer.ejs') %>
