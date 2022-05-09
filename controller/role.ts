@@ -1,6 +1,7 @@
 import { DefaultState, Context } from 'koa';
 import roleApi = require("../dao/role");
 import appRouter = require("./role/menus");
+import { SequelizeScopeError } from "sequelize";
 import { RoleAttributes } from "../model/role";
 import { InterfaceFindAllObject, ListParamsInterface } from "../global.interface";
 
@@ -9,9 +10,11 @@ export const addRole = async (ctx: Context, next: () => Promise<void>) => {
     try {
         let role: RoleAttributes = await roleApi.addRole(params);
         ctx.rest(role);
-    } catch (e) {
+    } catch (e: any) {
         if (e.name == "SequelizeUniqueConstraintError") {
             throw ctx.ApiError("role_name_repeat");
+        } else {
+            throw e;
         }
     }
 };
@@ -44,7 +47,7 @@ export const updateRole = async (ctx: Context, next: () => Promise<void>) => {
     }
     try {
         await roleApi.updateRole(params);
-    } catch (e) {
+    } catch (e: any) {
         if (e.name == "SequelizeUniqueConstraintError") {
             throw ctx.ApiError("role_name_repeat");
         } else {

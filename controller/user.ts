@@ -2,7 +2,7 @@ import jwt = require('jsonwebtoken')
 import config from '../config'
 import Rsa = require('../tool/rsa')
 import userApi = require('../dao/user')
-import moment = require('moment')
+
 import svgCaptcha = require('svg-captcha');
 import { appRouter, AppRouterItemInterface } from './role/menus';
 import _lodash = require('lodash');
@@ -37,7 +37,7 @@ function sortMenus(authMenus: AppRouterItemInterface[], localMenus: AppRouterIte
 // 注册
 export const register = async (ctx: Context, next: () => Promise<void>) => {
     let roleId = 3
-    let { username, nickname, password, mobile, email, captcha,   } = ctx.request.body
+    let { username, name, password, mobile, email, captcha, type   } = ctx.request.body
     let sessionCaptcha = ctx.session.captcha
     if (!sessionCaptcha) {
         return ctx.rest(null)
@@ -50,10 +50,11 @@ export const register = async (ctx: Context, next: () => Promise<void>) => {
     }
     const params = {
         username,
-        nickname,
+        name,
         password,
         mobile,
         email,
+        type,
         
     }
     let user = await registerUser(params, false, ctx)
@@ -82,7 +83,7 @@ export const login = async (ctx: Context, next: () => Promise<void>) => {
     if (userData != null) {
         let result = { 
             ...userData.toJSON(),
-            authority: getRolesMaxAuth(userData.roles || [])
+            authority: getRolesMaxAuth(userData.roleIdList || [])
         };
         const uData = {
                 id: userData.id,
