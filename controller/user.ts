@@ -83,7 +83,7 @@ export const login = async (ctx: Context, next: () => Promise<void>) => {
     if (userData != null) {
         let result = { 
             ...userData.toJSON(),
-            authority: getRolesMaxAuth(userData.roleIdList || [])
+            authority: getRolesMaxAuth(userData.roles || [])
         };
         const uData = {
                 id: userData.id,
