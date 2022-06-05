@@ -146,8 +146,10 @@ export const getUserList = async (
         : 0;
     let pageSize: number = listParams.pageSzie || 10;
 
-    let whereOption: WhereOptions<UserAttributes> | OrOperator<UserAttributes> =
-        {};
+    let whereOption: WhereOptions<UserAttributes> =
+        {
+            
+        };
     if (listParams.keyword != null) {
         let keyword: string = `%${listParams.keyword}%`;
         whereOption = {
@@ -158,7 +160,7 @@ export const getUserList = async (
                     },
                 },
                 {
-                    mobile: {
+                    tel: {
                         [Op.like]: keyword,
                     },
                 },

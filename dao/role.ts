@@ -42,12 +42,14 @@ export const getRole = async (id: number | string): Promise<Role> => {
 };
 
 export const deleteRole = async (id: number | string): Promise<number> => {
-    let result: number = await models.Role.destroy({
+    await models.Role.update({
+        deleted: 1
+    }, {
         where: {
             id,
         },
     });
-    return result;
+    return 1;
 };
 
 export const getRoleList = async (
@@ -56,7 +58,7 @@ export const getRoleList = async (
     let pageNumber: number = roleListParams.pageNumber ? roleListParams.pageNumber - 1 : 0;
     let pageSize: number = roleListParams.pageSzie || 10;
 
-    let whereOption: WhereOptions<RoleAttributes> | OrOperator<RoleAttributes> = {
+    let whereOption: WhereOptions<RoleAttributes> = {
 
     }
     if (roleListParams.keyword != null) {
@@ -96,3 +98,4 @@ export const updateRole = async (
         },
     });
 };
+

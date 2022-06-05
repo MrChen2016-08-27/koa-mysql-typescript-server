@@ -15,6 +15,8 @@ import Role from "./role";
 
 export interface UserAttributes {
     id: number;
+    orgId: number;
+    orgName: string;
     avatar: string;
     username: string;
     password: string;
@@ -26,6 +28,7 @@ export interface UserAttributes {
     tel: string;
     email: string;
     address: string;
+    deleted: number;
 }
 
 export interface UserCreationAttributes
@@ -41,6 +44,7 @@ export interface UserCreationAttributes
         | "tel"
         | "email"
         | "address"
+        | "deleted"
     > {}
 
 class User
@@ -48,6 +52,8 @@ class User
     implements UserAttributes
 {
     public id!: number;
+    public orgId!: number;
+    public orgName!: string;
     public avatar!: string;
     public username!: string;
     public password!: string;
@@ -59,6 +65,7 @@ class User
     public tel!: string;
     public email!: string;
     public address!: string;
+    public deleted!: number;
 
     // timestamps!
     public readonly createdAt!: Date;
@@ -81,6 +88,15 @@ User.init(
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
+        },
+        orgId: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        // 头像
+        orgName: {
+            type: DataTypes.STRING(64),
         },
         // 头像
         avatar: {
@@ -107,7 +123,7 @@ User.init(
         },
         // 性别
         gender: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.TINYINT,
         },
         // 出生年月
         birth: {
@@ -128,6 +144,10 @@ User.init(
         // 地址
         address: {
             type: DataTypes.STRING(64),
+        },
+        deleted: {
+            type: DataTypes.TINYINT,
+            defaultValue: 0
         },
     },
     {

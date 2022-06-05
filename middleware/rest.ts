@@ -9,7 +9,7 @@ import Koa = require('koa');
 function restify(app: Koa, pathPrefix = '/api') {
     // REST API前缀，默认为/api/:
     pathPrefix = pathPrefix || '/page';
-    app.use(async (ctx, next) => {
+    app.use(async (ctx: Koa.Context, next: () => Promise<void>) => {
         // 是否是REST API前缀?
         if (ctx.request.path.startsWith(pathPrefix)) {
             // 绑定rest()方法:
@@ -24,7 +24,7 @@ function restify(app: Koa, pathPrefix = '/api') {
             }
             try{
                 await next();
-            } catch(e) {
+            } catch(e: any) {
                 console.log(e, '错误信息');
                 ctx.response.type = 'application/json';
                 ctx.response.body = {
@@ -38,7 +38,7 @@ function restify(app: Koa, pathPrefix = '/api') {
 }
 
 
-
+// 给context 添加rest和ApiError typescript声明
 declare module 'koa' {
     interface Context {
         rest(data: any): void;
@@ -49,7 +49,7 @@ declare module 'koa' {
 
 // 注册错误类到 ctx, 可以使用 throw new ctx.ApiError(code) 来抛出异常
 function registerApiError(app: Koa) {
-    app.use(async (ctx: Koa.Context, next) => {
+    app.use(async (ctx: Koa.Context, next: () => Promise<void>) => {
         ctx.ApiError = ApiError;
     
         await next();
