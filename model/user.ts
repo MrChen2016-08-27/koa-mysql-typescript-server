@@ -10,11 +10,12 @@ import {
     BelongsToManyGetAssociationsMixin,
 } from "sequelize";
 
-import sequelize from "../dao/index";
+import sequelize from "./sequelizeConfig";
 import Role from "./role";
 
 export interface UserAttributes {
     id: number;
+    type: number;
     orgId: number;
     orgName: string;
     avatar: string;
@@ -35,6 +36,9 @@ export interface UserCreationAttributes
     extends Optional<
         UserAttributes,
         | "id"
+        | "orgId"
+        | "orgName"
+        | "type"
         | "avatar"
         | "nickname"
         | "name"
@@ -52,6 +56,7 @@ class User
     implements UserAttributes
 {
     public id!: number;
+    public type!: number;
     public orgId!: number;
     public orgName!: string;
     public avatar!: string;
@@ -89,10 +94,11 @@ User.init(
             autoIncrement: true,
             primaryKey: true,
         },
+        type: {
+            type: DataTypes.TINYINT,
+        },
         orgId: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
-            primaryKey: true,
         },
         // 头像
         orgName: {
@@ -147,7 +153,7 @@ User.init(
         },
         deleted: {
             type: DataTypes.TINYINT,
-            defaultValue: 0
+            defaultValue: 0,
         },
     },
     {

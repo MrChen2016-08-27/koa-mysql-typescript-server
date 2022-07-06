@@ -37,7 +37,7 @@ function sortMenus(authMenus: AppRouterItemInterface[], localMenus: AppRouterIte
 // 注册
 export const register = async (ctx: Context, next: () => Promise<void>) => {
     let roleId = 3
-    let { username, name, password, mobile, email, captcha, type   } = ctx.request.body
+    let { username, name, password, tel, email, captcha, type   } = ctx.request.body
     let sessionCaptcha = ctx.session.captcha
     if (!sessionCaptcha) {
         return ctx.rest(null)
@@ -48,11 +48,11 @@ export const register = async (ctx: Context, next: () => Promise<void>) => {
     if (!sessionCaptcha || sessionCaptcha != captcha) {
         throw ctx.ApiError("captcha_error")
     }
-    const params = {
+    const params: UserCreationAttributes = {
         username,
         name,
         password,
-        mobile,
+        tel,
         email,
         type,
         
@@ -189,7 +189,7 @@ export const getUser = async (ctx: Context, next: () => Promise<void>) => {
 // 后台修改用户信息和权限
 export const updateUserAndRole = async (ctx: Context, next: () => Promise<void>) => {
     let params = ctx.request.body
-    let { id, nickname, gender, birth, experience, email, address, avatar, mobile } = params
+    let { id, nickname, gender, birth, experience, email, address, avatar, tel } = params
     let roleIds = params.roleIds
     await userApi.updateUser(id, {
         id,
@@ -200,7 +200,7 @@ export const updateUserAndRole = async (ctx: Context, next: () => Promise<void>)
         email,
         address,
         avatar,
-        mobile
+        tel
     })
     await userApi.updateUserRole(params.id, roleIds)
     let result = await userApi.getUserRole(params.id)
@@ -250,11 +250,11 @@ export const getMyUserInfo = async (ctx: Context, next: () => Promise<void>) => 
 // 用户修改自己信息
 export const updateMyUserInfo = async (ctx: Context, next: () => Promise<void>) => {
     let userInfo = ctx.state.user.data
-    let { avatar, nickname, birth, gender, email, mobile } = ctx.request.body
+    let { avatar, nickname, birth, gender, email, tel } = ctx.request.body
     await userApi.updateUser(userInfo.id, {
         id: userInfo.id,
         avatar,
-        nickname, birth, gender, email, mobile
+        nickname, birth, gender, email, tel
     })
     ctx.rest(null)
 }

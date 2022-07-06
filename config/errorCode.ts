@@ -6,9 +6,9 @@ interface errCodeInterface {
 const errCode: errCodeInterface = {
     register_fail: '注册失败, 请稍候重试',
     info_format_error: '信息格式有误',
-    mobile_not_null: '手机号不能为空',
+    tel_not_null: '手机号不能为空',
     username_not_null: '用户名不能为空',
-    mobile_format_error: '手机号格式有误',
+    tel_format_error: '手机号格式有误',
     username_format_error: '用户名格式有误',
     password_format_error: '密码长度必须在6-18位之间',
     user_repeat: '用户已存在',

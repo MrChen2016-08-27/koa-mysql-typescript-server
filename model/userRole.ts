@@ -1,5 +1,5 @@
 import { Model, ModelDefined, DataTypes, Optional } from "sequelize";
-import sequelize from "../dao/index";
+import sequelize from "./sequelizeConfig";
 import User from "./user";
 import Role from "./role";
 

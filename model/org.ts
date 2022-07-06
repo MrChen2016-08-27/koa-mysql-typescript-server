@@ -58,7 +58,6 @@ export interface OrgCreationAttributes
         | "status"
         | "remark"
         | "props"
-        | "deleted"
     > {}
 
 class Org
@@ -98,7 +97,6 @@ Org.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
             primaryKey: true,
         },
         name: {
@@ -107,8 +105,7 @@ Org.init(
             validate: {
                 notNull: {
                     msg: '组织架构名称不能为空'
-                },
-                
+                },   
             }
         },
         type: {

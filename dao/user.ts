@@ -175,11 +175,11 @@ export const getUserList = async (
             },
         });
     }
-    if (listParams.mobile != null) {
-        let mobile: string = `%${listParams.mobile}%`;
+    if (listParams.tel != null) {
+        let tel: string = `%${listParams.tel}%`;
         whereOption = Object.assign(whereOption, {
-            mobile: {
-                [Op.like]: mobile,
+            tel: {
+                [Op.like]: tel,
             },
         });
     }
