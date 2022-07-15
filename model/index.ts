@@ -12,7 +12,7 @@ import Org from "./Org";
     } catch (e) {
         console.log("sequelize sync error", e);
     }
-});
+}());
 
 export default {
     User,

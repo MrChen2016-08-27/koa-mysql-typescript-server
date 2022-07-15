@@ -15,6 +15,11 @@ export const appRouter: AppRouterItemInterface[] = [
         title: '系统管理',
         children: [
             {
+                id: '2',
+                apiKey: '/role',
+                title: '组织架构'
+            },
+            {
                 id: '1',
                 apiKey: '/role',
                 title: '角色管理'

@@ -5,7 +5,7 @@ import User from "../model/user";
 import { RoleAttributes, RoleCreationAttributes } from "../model/role";
 import Role from "../model/role";
 import { getRolesMaxAuth } from "../tool/auth";
-import mysqlOrm from "./index";
+import mysqlOrm from "../model/sequelizeConfig";
 import ApiError from "../config/ApiError";
 import {
     InterfaceFindAllObject,
@@ -146,10 +146,7 @@ export const getUserList = async (
         : 0;
     let pageSize: number = listParams.pageSzie || 10;
 
-    let whereOption: WhereOptions<UserAttributes> =
-        {
-            
-        };
+    let whereOption: WhereOptions<UserAttributes> = {};
     if (listParams.keyword != null) {
         let keyword: string = `%${listParams.keyword}%`;
         whereOption = {
