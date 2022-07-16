@@ -1,20 +1,12 @@
 export const typeConfig = {
-    pointTypeList: [
+    testTypeList: [
         {
-            label: "学校食堂",
+            label: "测试",
             value: 1,
         },
         {
-            label: "餐饮单位",
+            label: "测试2",
             value: 2,
-        },
-        {
-            label: "企业食堂",
-            value: 3,
-        },
-        {
-            label: "政府食堂",
-            value: 4,
         },
     ],
 };
