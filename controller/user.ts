@@ -88,9 +88,9 @@ export const login = async (ctx: Context, next: () => Promise<void>) => {
             ...userData.toJSON(),
             authority: getRolesMaxAuth(userData.roles || []),
         };
-        let roleIds = userData.roles?.map((item) => item.id);
+
         const uData = {
-            userId: userData.id,
+            id: userData.id,
             username: userData.username,
             avatar: userData.avatar,
             orgId: userData.orgId,
