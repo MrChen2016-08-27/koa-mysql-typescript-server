@@ -95,7 +95,6 @@ export const login = async (ctx: Context, next: () => Promise<void>) => {
             avatar: userData.avatar,
             orgId: userData.orgId,
             orgName: userData.orgName,
-            roleIds: roleIds,
         };
         ctx.rest({
             token: jwt.sign({ data: uData }, config.jwt.secret, {
