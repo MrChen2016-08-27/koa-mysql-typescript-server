@@ -1,6 +1,7 @@
 import Router = require("koa-router");
 import user from "./api/user";
 import role from "./api/role";
+import org from "./api/org";
 import serviceConfig from "./api/serviceConfig";
 import { DefaultState, Context } from "koa";
 const fileupload = require("./api/fileupload");
@@ -34,6 +35,7 @@ router.get("/auth", async (ctx, next) => {
 router.use(fileupload.routes(), fileupload.allowedMethods());
 router.use(user.routes(), user.allowedMethods());
 router.use(role.routes(), role.allowedMethods());
+router.use(org.routes(), org.allowedMethods());
 router.use(serviceConfig.routes(), serviceConfig.allowedMethods());
 
 export default router;

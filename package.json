@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@types/ioredis": "^4.28.10",
-    "@types/node": "^16.11.42",
+    "@types/node": "^18.0.6",
     "@types/validator": "^13.6.3",
     "autoprefixer": "^8.6.3",
     "bcrypt": "^5.0.1",
