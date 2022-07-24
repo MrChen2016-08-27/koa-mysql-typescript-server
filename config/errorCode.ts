@@ -6,9 +6,9 @@ interface errCodeInterface {
 const errCode: errCodeInterface = {
     register_fail: '注册失败, 请稍候重试',
     info_format_error: '信息格式有误',
-    tel_not_null: '手机号不能为空',
+    mobile_not_null: '手机号不能为空',
     username_not_null: '用户名不能为空',
-    tel_format_error: '手机号格式有误',
+    mobile_format_error: '手机号格式有误',
     username_format_error: '用户名格式有误',
     password_format_error: '密码长度必须在6-18位之间',
     user_repeat: '用户已存在',
@@ -27,7 +27,8 @@ const errCode: errCodeInterface = {
     captcha_error: '验证码错误',
     user_order_exist: '有尚未完成的订单需要处理',
     not_order_pay_exist: '用户没有待支付的订单',
-    find_no_exist: '该条数据不存在货已被删除'
+    find_no_exist: '该条数据不存在或者已被删除',
+    org_form_validate_error: '组织架构信息不完整'
 }
 
 export default errCode;

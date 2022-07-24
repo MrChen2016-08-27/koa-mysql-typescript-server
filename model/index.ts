@@ -2,7 +2,7 @@ import mysqlOrm from "./sequelizeConfig";
 import User from "./user";
 import Role from "./role";
 import UserRole from "./userRole";
-import Org from "./Org";
+import Org from "./org";
 
 (async function () {
     try {
