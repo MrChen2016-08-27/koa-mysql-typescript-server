@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "types": ["node"],
         "module": "commonjs",
         "outDir": "./built",
         "allowJs": true,
@@ -8,12 +9,6 @@
         "sourceMap": true,
         "skipLibCheck": true
     },
-    "include": [
-        "./**/*",
-    ],
-    "exclude": [
-        "node_modules",
-        "views",
-        "built"
-    ]
+    "include": ["./**/*"],
+    "exclude": ["node_modules", "views", "built"]
 }
