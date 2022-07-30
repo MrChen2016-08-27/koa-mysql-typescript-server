@@ -34,12 +34,12 @@ export const getOrgList = async (): Promise<OrgListReturnInterface> => {
         const allOrgList: Org[] = await models.Org.findAll({
             where: {
                 deleted: {
-                    [Op.eq]: 0,
+                    [Op.ne]: 1,
                 },
             },
         });
         let orgList = allOrgList.filter(
-            (orgData2) => orgData2.parentId == null
+            (orgData2: any) => orgData2.parentId == null
         );
         // 存储格式化后的org列表
         formatOrgList = formatTreeOrgList(orgList, allOrgList);
@@ -60,7 +60,7 @@ function formatTreeOrgList(orgList: Org[], allOrgList: Org[]): Org[] {
     if (orgList.length == allOrgList.length) {
         orgResultList = fromJS(orgList).toJS() as Org[];
     }
-    orgResultList = orgList.map((orgData) => {
+    orgResultList = orgList.map((orgData: any) => {
         // sequelize model转换为普通对象
         orgData = orgData.toJSON();
         let children = allOrgList.filter((orgItem) => {
