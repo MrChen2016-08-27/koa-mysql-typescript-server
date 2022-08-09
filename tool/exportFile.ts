@@ -3,9 +3,10 @@ import path = require("path");
 import fs = require("fs");
 import config from "../config";
 
-interface XlsxHeaderConfigItemInterface {
+export interface XlsxHeaderConfigItemInterface {
     colTitle: string;
     fieldName: string;
+    formatter?: (row: any, index: number) => string | number;
 }
 
 function generateExcel(resultList: any[], fileName: string) {
@@ -25,7 +26,7 @@ export const exportXlsxFile = (
     xlsxHeaderConfig: XlsxHeaderConfigItemInterface[],
     dataList: any[],
     fileName: string,
-    startIndex: number = 1
+    filter?: (row: any, index: number) => boolean
 ) => {
     let xlsxData = [];
     // 生成xlsx表头
@@ -38,15 +39,14 @@ export const exportXlsxFile = (
 
         // 获取表格数据
         xlsxHeaderConfig.forEach((item) => {
-            if (item.fieldName == "index") {
-                xlsxRow.push((startIndex + i).toString());
+            let text = data[item.fieldName];
+            if (item.formatter) {
+                text = item.formatter(data, i);
+            }
+            if (text) {
+                xlsxRow.push(text);
             } else {
-                let text = data[item.fieldName];
-                if (text) {
-                    xlsxRow.push(text);
-                } else {
-                    xlsxRow.push("");
-                }
+                xlsxRow.push("");
             }
         });
         xlsxData.push(xlsxRow);

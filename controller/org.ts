@@ -1,5 +1,6 @@
 import { Context } from "koa";
 import { SequelizeScopeError } from "sequelize/types";
+const AreaData = require("./area/pca-code.json");
 import OrgApi = require("../dao/org");
 import Org, { OrgAttributes } from "../model/org";
 
@@ -41,4 +42,11 @@ export const deleteOrg = async (ctx: Context, next: () => Promise<void>) => {
         await OrgApi.deleteOrg(id as number);
     }
     ctx.rest(null);
+};
+
+// 返回省市区数据
+export const getAreaAll = async (ctx: Context, next: () => Promise<void>) => {
+    ctx.rest({
+        areaData: AreaData,
+    });
 };
