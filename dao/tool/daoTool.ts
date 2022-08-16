@@ -131,7 +131,7 @@ export function addFiterName<T>(
 ): WhereOptions<T> {
     let whereOption: any = {};
     nameList.forEach((name: string) => {
-        if (params[name] !== null && params[name] !== undefined) {
+        if (params[name] !== null && params[name] !== undefined && params[name] !== '') {
             whereOption[name] = params[name];
         }
     });
