@@ -14,14 +14,14 @@ interface ListAndDateParamsInterface {
 /**
  *
  * @param params 包含时间的请求参数
- * @param modelDateField 模型表中需要筛选的时间类型字段， 默认为 ctime
+ * @param modelDateField 模型表中需要筛选的时间类型字段， 默认为 createdAt
  * @param paramBeginDateKey 参数中筛选时间范围的开始时间字段，默认为 beginDate
  * @param paramEndDateKey 参数中筛选时间范围的结束时间字段，默认为 endDate
  * @returns
  */
 export function addDateRangeFilter<T>(
     params: ListParamsInterface,
-    modelDateField: string = "ctime",
+    modelDateField: string = "createdAt",
     paramBeginDateKey: string = "beginDate",
     paramEndDateKey: string = "endDate"
 ): WhereOptions<T> {
