@@ -42,44 +42,47 @@ export const getRole = async (id: number | string): Promise<Role> => {
 };
 
 export const deleteRole = async (id: number | string): Promise<number> => {
-    await models.Role.update({
-        deleted: 1
-    }, {
-        where: {
-            id,
+    await models.Role.update(
+        {
+            deleted: 1,
         },
-    });
+        {
+            where: {
+                id,
+            },
+        }
+    );
     return 1;
 };
 
 export const getRoleList = async (
     roleListParams: ListParamsInterface
 ): Promise<InterfaceFindAllObject> => {
-    let pageNumber: number = roleListParams.pageNumber ? roleListParams.pageNumber - 1 : 0;
+    let pageNumber: number = roleListParams.pageNumber
+        ? roleListParams.pageNumber - 1
+        : 0;
     let pageSize: number = roleListParams.pageSzie || 10;
 
-    let whereOption: WhereOptions<RoleAttributes> = {
-
-    }
+    let whereOption: WhereOptions<RoleAttributes> = {};
     if (roleListParams.keyword != null) {
-            let keyword: string = `%${roleListParams.keyword}%`;
-            whereOption = {
-                [Op.or]: [
-                    {
-                        name: {
-                            [Op.like]: keyword
-                        },
+        let keyword: string = `%${roleListParams.keyword}%`;
+        whereOption = {
+            [Op.or]: [
+                {
+                    name: {
+                        [Op.like]: keyword,
                     },
-                ],
-            }
+                },
+            ],
+        };
     }
     if (roleListParams.name != null) {
         let name: string = `%${roleListParams.name}%`;
         whereOption = Object.assign(whereOption, {
             name: {
                 [Op.like]: name,
-            }
-        })
+            },
+        });
     }
     let result: InterfaceFindAllObject = await models.Role.findAndCountAll({
         where: whereOption,
@@ -92,10 +95,18 @@ export const getRoleList = async (
 export const updateRole = async (
     updateRoleParams: RoleAttributes
 ): Promise<void> => {
+    if (updateRoleParams.authority) {
+        let auth: string = JSON.stringify({});
+        if (typeof updateRoleParams.authority == "object") {
+            auth = JSON.stringify(updateRoleParams.authority);
+        } else if (updateRoleParams.authority != null) {
+            auth = String(updateRoleParams.authority);
+        }
+        updateRoleParams.authority = auth;
+    }
     await models.Role.update(updateRoleParams, {
         where: {
             id: updateRoleParams.id,
         },
     });
 };
-

@@ -41,6 +41,8 @@ export interface UserCreationAttributes
         | "type"
         | "avatar"
         | "nickname"
+        | "username"
+        | "password"
         | "name"
         | "gender"
         | "birth"

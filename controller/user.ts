@@ -2,6 +2,7 @@ import jwt = require("jsonwebtoken");
 import config from "../config";
 import Rsa = require("../tool/rsa");
 import userApi = require("../dao/user");
+import orgApi = require("../dao/org");
 
 import svgCaptcha = require("svg-captcha");
 import { appRouter, AppRouterItemInterface } from "./role/menus";
@@ -18,6 +19,7 @@ import {
     ListParamsInterface,
     InterfaceFindAllObject,
 } from "../global.interface";
+const saltRounds: number = 10;
 
 function sortMenus(
     authMenus: AppRouterItemInterface[],
@@ -140,7 +142,7 @@ async function registerUser(
         throw ctx.ApiError("user_repeat");
     }
     let user: User | null = null;
-    const saltRounds: number = 10;
+
     // 对密码进行加密
     let hashPassword: string = await bcrypt.hash(params.password, saltRounds);
     params.password = hashPassword;
@@ -218,9 +220,11 @@ export const updateUserAndRole = async (
         address,
         avatar,
         tel,
+        orgId,
+        password,
     } = params;
     let roleIds = params.roleIds;
-    await userApi.updateUser(id, {
+    let updateData: UserCreationAttributes = {
         id,
         nickname,
         gender,
@@ -230,7 +234,23 @@ export const updateUserAndRole = async (
         address,
         avatar,
         tel,
-    });
+        orgId,
+    };
+    if (orgId) {
+        let orgData = await orgApi.getOrg(orgId);
+        updateData.orgName = orgData?.name;
+    }
+
+    if (password) {
+        if (password.length >= 6) {
+            // 重设密码，对密码进行加密
+            let hashPassword: string = await bcrypt.hash(password, saltRounds);
+            updateData.password = hashPassword;
+        } else {
+            throw ctx.ApiError("password_format_error");
+        }
+    }
+    await userApi.updateUser(id, updateData);
     await userApi.updateUserRole(params.id, roleIds);
     let result = await userApi.getUserRole(params.id);
     ctx.rest(result);
