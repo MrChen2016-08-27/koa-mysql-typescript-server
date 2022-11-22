@@ -2,7 +2,7 @@ const _lang = require('lodash/lang')
 import config from '../config'
 import Role from '../model/role';
 import { AppRouterItemInterface } from '../controller/role/menus';
-import { AuthorityInterface } from '../global.interface';
+import { AuthorityInterface, ListParamsInterface, TokenUserInfo } from '../global.interface';
 
 /**
  * 获得计算拥有的角色集合的合并的最大权限
@@ -68,3 +68,19 @@ export const filterAuthMenus = (authObj: any, list: AppRouterItemInterface[]): A
     }
     return results
 }
+
+// 获取权限过滤的列表参数
+export const getAuthListParams = (
+    params: ListParamsInterface,
+    tokenUserData: TokenUserInfo
+) => {
+    // 是否是超级管理员,超级管理员可以查看所有用户数据不受限制
+    let isAdmin: any = tokenUserData.roleIds.find(
+        (roleId: number) => roleId == 1
+    );
+    if (!isAdmin) {
+        // 非超级管理员只能查看自己的数据
+        params.userId = tokenUserData.userId;
+    }
+    return params;
+};

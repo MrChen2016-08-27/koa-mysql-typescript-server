@@ -11,7 +11,16 @@ import path = require("path");
 import Koa = require("koa");
 const xss = require("node-xss").clean;
 
-const render: Koa.Middleware = views(__dirname + "/../views", {
+declare global {
+    var __tsDirName: string;
+}
+
+// tsDirName 用于取代 dirname, 因为ts编译在built目录，会导致访问静态，页面目录等非js文件路径异常
+global.__tsDirName = (function (): string {
+    let str: string = path.join(__dirname, "../");
+    return str;
+})();
+const render: Koa.Middleware = views(__tsDirName + "/../views", {
     extension: "ejs",
 });
 

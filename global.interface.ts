@@ -24,6 +24,18 @@ export interface AuthorityInterface {
     [authKey: number]: any;
 }
 
+// token 中的 user 信息
+export interface TokenUserInfo {
+    id: number | string;
+    userId: number | string;
+    username: string;
+    avatar: string;
+    orgId: string | number;
+    orgName: string;
+    type: string | number;
+    roleIds: number[];
+}
+
 // 服务配置文件
 export interface ServerConfigInterface {
     server: ServerConfig;
@@ -38,6 +50,8 @@ export interface ServerConfigInterface {
     https: ServerConfigHttps;
     resource: ServerConfigResource;
     apiKeys: ["增加", "删除", "修改", "查询"];
+    domain: string;
+    wechats?: ServerWeChatItemConfig[];
 }
 
 export interface ServerConfig {
@@ -52,7 +66,7 @@ interface ServerConfigApi {
 }
 
 interface ServerConfigRedis {
-    host:  string;
+    host: string;
     port: number;
     ttl: number;
 }
@@ -102,4 +116,31 @@ interface ServerConfigHttps {
 interface ServerConfigResource {
     context: string;
     public: string;
+}
+
+// 获取权限过滤的列表参数
+export const getAuthListParams = (
+    params: ListParamsInterface,
+    tokenUserData: TokenUserInfo
+) => {
+    // 是否是超级管理员,超级管理员可以查看所有用户数据不受限制
+    let isAdmin: any = tokenUserData.roleIds.find(
+        (roleId: number) => roleId == 1
+    );
+    if (!isAdmin) {
+        // 非超级管理员只能查看自己的数据
+        params.userId = tokenUserData.userId;
+    }
+    return params;
+};
+
+interface ServerWeChatItemConfig {
+    // 自定义标识，用于辨别选择哪个小程序与服务器对应配置
+    id: number;
+    // 小程序名称
+    name: string;
+    // 小程序 appid
+    appid: string;
+    // 小程序 secret
+    secret: string;
 }

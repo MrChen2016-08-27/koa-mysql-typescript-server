@@ -2,6 +2,8 @@ import xlsx = require("node-xlsx");
 import path = require("path");
 import fs = require("fs");
 import config from "../config";
+import JSZip = require("jszip");
+import puppeteer = require("puppeteer");
 
 export interface XlsxHeaderConfigItemInterface {
     colTitle: string;
@@ -12,14 +14,12 @@ export interface XlsxHeaderConfigItemInterface {
 function generateExcel(resultList: any[], fileName: string) {
     let buffer = xlsx.build([{ name: "mySheetName", data: resultList }]);
     // let dvData = new DataView(buffer);
-    let exportPath = path.join(
-        __dirname,
-        "../../",
-        config.file.local,
-        fileName
-    );
+    let exportPath = path.join(__tsDirName, "../", config.file.local, fileName);
     fs.writeFileSync(exportPath, buffer as unknown as DataView, "utf-8");
-    return exportPath;
+    return {
+        exportPath,
+        excelBuffer: buffer,
+    };
 }
 
 export const exportXlsxFile = (
@@ -53,10 +53,88 @@ export const exportXlsxFile = (
     }
     xlsxData.unshift(xlsxHeader);
 
-    let localFilePath: string = generateExcel(xlsxData, fileName);
+    let { exportPath: localFilePath } = generateExcel(xlsxData, fileName);
     let wwwFilePath = path.join(config.file.wwww, fileName);
     return {
         localFilePath,
         wwwFilePath,
+    };
+};
+
+export interface ZipFileItem {
+    name: string;
+    data: any;
+    zipOption?: JSZip.JSZipFileOptions;
+}
+
+// 生成zip文件
+export const exportZipFile = async (
+    filesConfig: ZipFileItem[],
+    zipName: string
+) => {
+    let zip = new JSZip();
+    filesConfig.forEach((item) => {
+        if (item.zipOption) {
+            zip.file(item.name, item.data, item.zipOption);
+        } else {
+            zip.file(item.name, item.data);
+        }
+    });
+    let content = await zip.generateAsync({ type: "nodebuffer" });
+    let exportPath = path.join(__tsDirName, "../", config.file.local, zipName);
+    let localFilePath = exportPath;
+    fs.writeFileSync(exportPath, content as unknown as DataView, "utf-8");
+    let wwwFilePath = path.join(config.file.wwww, zipName);
+    return {
+        localFilePath,
+        wwwFilePath,
+    };
+};
+
+function imageTypeHandle(base64Data: string, type: string) {
+    if (type == "png") {
+        return `data:image/png;base64,${base64Data}`;
+    }
+    if (type == "jpg") {
+        return `data:image/jpg;base64,${base64Data}`;
+    }
+}
+
+// 导出图片通过网址
+export const exportImageByUrl = async (
+    url: string,
+    imgName: string,
+    imgType = "png",
+    elementSelector?: string
+) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url);
+    let base64: Buffer | string | null | undefined = null;
+    if (elementSelector) {
+        const allResultsSelector = elementSelector;
+        let selectorElement = await page.waitForSelector(allResultsSelector!);
+        base64 = await selectorElement?.screenshot({ encoding: "base64" });
+    } else {
+        base64 = await page.screenshot({ encoding: "base64" });
+    }
+
+    let base64Result2 = imageTypeHandle(base64 as string, imgType);
+
+    let localFilePath = path.join(
+        __tsDirName,
+        "../",
+        config.image.local,
+        imgName
+    );
+    let imgFileBufferDecoded = Buffer.from(base64 as string, "base64");
+    fs.writeFileSync(localFilePath, imgFileBufferDecoded);
+    let wwwFilePath = path.join(config.file.wwww, imgName);
+    await browser.close();
+    return {
+        localFilePath,
+        wwwFilePath,
+        base64,
+        formatBase64Result: base64Result2,
     };
 };
