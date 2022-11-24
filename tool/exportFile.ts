@@ -129,7 +129,7 @@ export const exportImageByUrl = async (
     );
     let imgFileBufferDecoded = Buffer.from(base64 as string, "base64");
     fs.writeFileSync(localFilePath, imgFileBufferDecoded);
-    let wwwFilePath = path.join(config.file.wwww, imgName);
+    let wwwFilePath = path.join(config.image.wwww, imgName);
     await browser.close();
     return {
         localFilePath,
