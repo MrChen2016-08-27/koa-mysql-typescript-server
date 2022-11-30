@@ -7,13 +7,13 @@
 import app from '../app';
 import debug = require('debug');
 import http = require('http');
-const config = require('../config');
+import config = require('../config');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(config.port || '3000');
+var port = normalizePort(config.default.server.port ? config.default.server.port.toString() : '3000');
 // app.set('port', port);
 
 /**
