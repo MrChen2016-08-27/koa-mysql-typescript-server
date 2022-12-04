@@ -4,7 +4,7 @@
 export interface ListParamsInterface {
     pageNumber: number;
     pageSize: number;
-    keyword: string;
+    keyword?: string;
     [prop: string]: any;
 }
 

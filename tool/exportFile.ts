@@ -107,9 +107,12 @@ export const exportImageByUrl = async (
     imgType = "png",
     elementSelector?: string
 ) => {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ["--no-sandbox"],
+    });
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(url, { waitUntil: "networkidle0" });
     let base64: Buffer | string | null | undefined = null;
     if (elementSelector) {
         const allResultsSelector = elementSelector;

@@ -144,7 +144,9 @@ export const getUserList = async (
     let pageNumber: number = listParams.pageNumber
         ? Number(listParams.pageNumber) - 1
         : 0;
-    let pageSize: number = listParams.pageSzie || 10;
+    let pageSize: number = listParams.pageSize
+        ? Number(listParams.pageSize)
+        : 10;
 
     let whereOption: WhereOptions<UserAttributes> = {};
     if (listParams.keyword != null) {

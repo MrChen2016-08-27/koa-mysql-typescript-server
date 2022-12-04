@@ -61,7 +61,9 @@ export const getRoleList = async (
     let pageNumber: number = roleListParams.pageNumber
         ? roleListParams.pageNumber - 1
         : 0;
-    let pageSize: number = roleListParams.pageSzie || 10;
+    let pageSize: number = roleListParams.pageSize
+        ? Number(roleListParams.pageSize)
+        : 10;
 
     let whereOption: WhereOptions<RoleAttributes> = {};
     if (roleListParams.keyword != null) {
