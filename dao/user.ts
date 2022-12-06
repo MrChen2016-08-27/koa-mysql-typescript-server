@@ -27,6 +27,22 @@ export const getUser = async (
     return null;
 };
 
+// 通过 wxOpenid 获取用户信息(不包含密码)
+export const getUserByWxOpenId = async (
+    wxOpenid: string
+): Promise<User | null> => {
+    let user: User | null = await models.User.findOne({
+        where: {
+            wxOpenid,
+        },
+        attributes: { exclude: ["password", "wxSessionKey"] },
+    });
+    if (user != null) {
+        return user;
+    }
+    return null;
+};
+
 // 获取用户信息(全部信息)
 export const getUserAllInfo = async (
     where: WhereOptions<UserAttributes>

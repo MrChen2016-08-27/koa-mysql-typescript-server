@@ -19,6 +19,8 @@ import {
     ListParamsInterface,
     InterfaceFindAllObject,
 } from "../global.interface";
+import { gennerateSn } from "../dao/tool/daoTool";
+import { getCode2session } from "../tool/wxTool";
 const saltRounds: number = 10;
 
 function sortMenus(
@@ -69,35 +71,37 @@ export const register = async (ctx: Context, next: () => Promise<void>) => {
 
 // 登录
 export const login = async (ctx: Context, next: () => Promise<void>) => {
-    let { username, password, remember } = ctx.request.body;
-    if (!username || !password) {
-        throw ctx.ApiError("info_format_error");
+    let { loginType, remember, captcha } = ctx.request.body;
+    let userData = null;
+    if (loginType == "wx") {
+        userData = await wxAccountLogin(ctx);
+    } else {
+        userData = await accountLogin(ctx, captcha);
     }
-
-    let user: User | null = await userApi.getUserAllInfo({ username });
-    if (!user) {
-        throw ctx.ApiError("login_info_error");
-    }
-    // 密码解密验证
-    let valid = await bcrypt.compare(password, user.password);
-    if (!valid) {
-        throw ctx.ApiError("login_info_error");
-    }
-    let userData: User | null = await userApi.getUserRole(user.id);
-
     if (userData != null) {
         let result = {
             ...userData.toJSON(),
             authority: getRolesMaxAuth(userData.roles || []),
         };
-
-        const uData = {
+        let roleIds = userData.roles
+            ? userData.roles.map((roleItem: any) => {
+                  return roleItem.id;
+              })
+            : [];
+        const uData: any = {
             id: userData.id,
+            userId: userData.id,
             username: userData.username,
             avatar: userData.avatar,
             orgId: userData.orgId,
             orgName: userData.orgName,
+            type: userData.type,
+            roleIds: roleIds,
+            status: userData.status,
         };
+        if (remember) {
+            uData.remember = remember;
+        }
         ctx.rest({
             token: jwt.sign({ data: uData }, config.jwt.secret, {
                 expiresIn: remember
@@ -108,6 +112,71 @@ export const login = async (ctx: Context, next: () => Promise<void>) => {
         });
     }
 };
+
+// 普通账号登陆
+async function accountLogin(ctx: Context, captcha: string) {
+    let { username, password } = ctx.request.body;
+    // 验证码验证
+    if (ctx.session && ctx.session.captcha && captcha) {
+        let sessionCaptcha = ctx.session.captcha;
+        // 转小写比较
+        sessionCaptcha = sessionCaptcha.toLowerCase();
+        captcha = captcha.toLowerCase();
+        if (sessionCaptcha != captcha) {
+            throw ctx.ApiError("captcha_error");
+        }
+    } else {
+        throw ctx.ApiError("captcha_error");
+    }
+    if (!username || !password) {
+        throw ctx.ApiError("info_format_error");
+    }
+    let user: User | null = await userApi.getUserAllInfo({ username });
+    if (!user) {
+        throw ctx.ApiError("login_info_error");
+    }
+    // 密码解密验证
+    let valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+        throw ctx.ApiError("login_info_error");
+    }
+    let userData: User | null = await userApi.getUserRole(user.id);
+    return userData;
+}
+
+// 微信账号登陆
+async function wxAccountLogin(ctx: Context) {
+    let { code, id, wxUserInfo } = ctx.request.body;
+    let result = config.wechats?.find((item) => {
+        return item.id.toString() == id;
+    });
+    let wxData = await getCode2session({
+        appid: result?.appid,
+        secret: result?.secret,
+        js_code: code,
+        grant_type: "authorization_code",
+    });
+    if (wxData.data.openid) {
+        // 获取openid 标识与 session_key 会话密钥
+        let { openid, session_key } = wxData.data;
+        let userData = await userApi.getUser({
+            wxOpenid: openid,
+        });
+        if (!userData) {
+            // 随机生成用户名编码
+            let username = await gennerateSn(userApi.getUserByWxOpenId, "WX_");
+            userData = await userApi.addUser({
+                nickname: "微信用户",
+                username,
+                password: openid,
+                wxOpenid: openid,
+                wxSessionKey: session_key,
+            });
+        }
+
+        return userData;
+    }
+}
 
 /**
  *
@@ -285,6 +354,7 @@ export const getSvgCaptcha = async (
     next: () => Promise<void>
 ) => {
     const captcha = svgCaptcha.create({
+        width: 120,
         size: 4,
         noise: 2,
         height: 36,

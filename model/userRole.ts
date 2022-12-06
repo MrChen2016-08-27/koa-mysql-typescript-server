@@ -10,8 +10,10 @@ interface UserRoleAttributes {
 interface UserRoleCreationAttributes
     extends Optional<UserRoleAttributes, "id"> {}
 
-class UserRole extends Model<UserRoleAttributes, UserRoleCreationAttributes>
-    implements UserRoleAttributes {
+class UserRole
+    extends Model<UserRoleAttributes, UserRoleCreationAttributes>
+    implements UserRoleAttributes
+{
     public id!: number;
 
     // timestamps!
@@ -33,7 +35,7 @@ UserRole.init(
     }
 );
 
-User.belongsToMany(Role, { through: UserRole, as: 'roles' });
-Role.belongsToMany(User, { through: UserRole, as: 'users' });
+User.belongsToMany(Role, { through: UserRole, as: "roles" });
+Role.belongsToMany(User, { through: UserRole, as: "users" });
 
 export default UserRole;

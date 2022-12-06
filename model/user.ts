@@ -29,6 +29,9 @@ export interface UserAttributes {
     tel: string;
     email: string;
     address: string;
+    wxOpenid: string;
+    wxSessionKey: string;
+    status: number;
     deleted: number;
 }
 
@@ -50,6 +53,9 @@ export interface UserCreationAttributes
         | "tel"
         | "email"
         | "address"
+        | "wxOpenid"
+        | "wxSessionKey"
+        | "status"
         | "deleted"
     > {}
 
@@ -72,6 +78,9 @@ class User
     public tel!: string;
     public email!: string;
     public address!: string;
+    public wxOpenid!: string;
+    public wxSessionKey!: string;
+    public status!: number;
     public deleted!: number;
 
     // timestamps!
@@ -152,6 +161,17 @@ User.init(
         // 地址
         address: {
             type: DataTypes.STRING(64),
+        },
+        // 微信 openid
+        wxOpenid: {
+            type: DataTypes.STRING(255),
+        },
+        // 微信 session key
+        wxSessionKey: {
+            type: DataTypes.STRING(255),
+        },
+        status: {
+            type: DataTypes.INTEGER,
         },
         deleted: {
             type: DataTypes.TINYINT,
