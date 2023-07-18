@@ -55,11 +55,7 @@ export const getOrgList = async (): Promise<OrgListReturnInterface> => {
 };
 
 function formatTreeOrgList(orgList: Org[], allOrgList: Org[]): Org[] {
-    let orgResultList: Org[] = [];
-    // 如果需要格式化数组与所有数据库数组相同，代表从头开始格式化
-    if (orgList.length == allOrgList.length) {
-        orgResultList = fromJS(orgList).toJS() as Org[];
-    }
+    let orgResultList: any = [];
     orgResultList = orgList.map((orgData: any) => {
         // sequelize model转换为普通对象
         orgData = orgData.toJSON();

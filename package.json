@@ -74,7 +74,7 @@
     "@types/debug": "^4.1.7",
     "@types/jsonwebtoken": "^8.5.4",
     "@types/koa": "^2.13.4",
-    "@types/koa-bodyparser": "^4.3.3",
+    "@types/koa-bodyparser": "4.3.7",
     "@types/koa-helmet": "^6.0.4",
     "@types/koa-json": "^2.0.20",
     "@types/koa-jwt": "^3.3.0",

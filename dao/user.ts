@@ -237,6 +237,5 @@ export const getAuthByUserId = async (
             },
         ],
     });
-
     return roles;
 };
